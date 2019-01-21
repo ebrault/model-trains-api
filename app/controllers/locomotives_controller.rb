@@ -1,22 +1,18 @@
 # frozen_string_literal: true
 
-class LocomotivesController < ApplicationController
+class LocomotivesController < ProtectedController
   before_action :set_locomotive, only: %i[show update destroy]
-
-  # GET /locomotives
   def index
-    @locomotives = Locomotive.all
+    @locomotives = current_user.locomotives.all
     render json: @locomotives
   end
 
-  # GET /locomotives/1
   def show
     render json: @locomotive
   end
 
-  # POST /locomotives
   def create
-    @locomotive = Locomotive.new(locomotive_params)
+    @locomotive = current_user.locomotives.build(locomotive_params)
     if @locomotive.save
       render json: @locomotive, status: :created
     else
@@ -24,7 +20,6 @@ class LocomotivesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /locomotives/1
   def update
     if @locomotive.update(locomotive_params)
       render json: @locomotive
@@ -33,7 +28,6 @@ class LocomotivesController < ApplicationController
     end
   end
 
-  # DELETE /locomotives/1
   def destroy
     @locomotive.destroy
   end
@@ -41,7 +35,7 @@ class LocomotivesController < ApplicationController
   private
 
   def set_locomotive
-    @locomotive = Locomotive.find(params[:id])
+    @locomotive = current_user.locomotives.find(params[:id])
   end
 
   def locomotive_params
